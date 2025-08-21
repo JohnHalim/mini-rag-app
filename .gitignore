@@ -171,3 +171,6 @@ activate.bat
 activate.ps1
 deactivate.bat
 pyvenv.cfg
+
+# ignore test notebooks
+notebooks/ 
