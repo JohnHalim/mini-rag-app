@@ -39,6 +39,20 @@ $ pip install -r requirements.txt
 $ cp .env.example .env
 ```
 
+## Run Docker Compose Servise:
+```bash
+$ cd docker
+$ cp .env.example .env
+```
+
+- update `.env` with your creditials
+
+```bash
+$ cd docker
+$ sudo docker compose up -d
+
+```
+
 ## Run the FastAPI server:
 
 ```bash
