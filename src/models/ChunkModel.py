@@ -9,6 +9,28 @@ class ChunkModel(BaseDataModel):
         super().__init__(db_client=db_client)
         self.collection= self.db_client[DataBaseEnum.COLLECTION_CHUNK_NAME.value]
 
+    @classmethod
+    async def create_instance(cls, db_client: object):
+        '''Super important function, connects to problems,
+        the async with init that is not async,
+        refers to 11-Mongo Indexing, 30:50'''
+        instance = cls(db_client)
+        await instance.init_collection()
+        return instance
+
+    async def init_collection(self):
+        all_collections = await self.db_client.list_collection_names()
+        if DataBaseEnum.COLLECTION_CHUNK_NAME.value not in all_collections:
+            self.collection = self.db_client[DataBaseEnum.COLLECTION_CHUNK_NAME.value]
+            indexes = DataChunk.get_indexes()
+            for index in indexes:
+                await self.collection.create_index(
+                    index["key"],
+                    name = index["name"],
+                    unique = index["unique"]
+                )
+
+
     async def create_chunk(self, chunk: DataChunk):
         ''' Here want to insert chunk from type (pydanic) to the collection that 
             accept dict (Key: Value) shape, so used model_dump = dict()'''
