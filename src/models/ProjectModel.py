@@ -34,7 +34,7 @@ class ProjectModel(BaseDataModel):
             Here want to insert project from type [Project] from type (pydanic) to the collection that 
             accept dict (Key: Value) shape, so used model_dump = dict()'''
         result = await self.collection.insert_one(project.model_dump(by_alias=True, exclude_unset=True)) # CHANGE THE .dict() TO .model_dump() to match pydantic V.2
-        project._id = result.inserted_id
+        project.id = result.inserted_id
 
         return project
         
