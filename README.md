@@ -49,7 +49,7 @@ $ cp .env.example .env
 
 ```bash
 $ cd docker
-$ sudo docker compose up -d
+$ sudo docker-compose up -d
 
 ```
 
