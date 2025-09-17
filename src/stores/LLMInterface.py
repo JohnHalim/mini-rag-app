@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 class LLMInterface(ABC):
-
+'''This interface applies the Factory Design Pattern, will know more soon'''
     @abstractmethod
     def set_generation_model(self, model_id: str):
         pass
