@@ -10,7 +10,8 @@ class ProjectModel(BaseDataModel):
 
     @classmethod
     async def create_instance(cls, db_client: object):
-        '''Super important function, connects to problems,
+        '''Creates an async instance from project model.
+        Super important function, connects to problems,
         the async with init that is not async,
         refers to 11-Mongo Indexing, 30:50'''
         instance = cls(db_client)
