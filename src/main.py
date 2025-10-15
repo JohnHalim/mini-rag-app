@@ -36,9 +36,12 @@ async def startup_span():
 async def shutdown_span():
     app.mongo_conn.close()
     app.vectordb_client.disconnect()
+    
+app.on_event("startup")(startup_span)
+app.on_event("shutdown")(shutdown_span)
 
-app.router.lifespan.on_startup.append(startup_span)
-app.router.lifespan.on_shutdown.appen(shutdown_span)
+# app.router.lifespan.on_startup.append(startup_span)
+# app.router.lifespan.on_shutdown.appen(shutdown_span)
 
 app.include_router(base.base_router)
 app.include_router(data.data_router)
