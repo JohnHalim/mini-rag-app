@@ -78,7 +78,7 @@ class ChunkModel(BaseDataModel):
             ).to_list(length=None)
             
         return[
-            ChunkModel(**record)
+            DataChunk(**record)
             for record in records
         ]
 
