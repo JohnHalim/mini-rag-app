@@ -85,6 +85,4 @@ class NLPController(BaseController):
         if not results:
             return False
         
-        return json.loads(                                               # loads it as json
-            json.dumps(results, default=lambda x: x.__dict__)    # return every object with str format
-        )
+        return results
