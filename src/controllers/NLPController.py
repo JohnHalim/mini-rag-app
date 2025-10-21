@@ -62,3 +62,29 @@ class NLPController(BaseController):
         )
 
         return True
+    
+    def search_vectordb_collection(self, project: Project, text: str, limit: int=10):
+        
+        # Step1: set collection name
+        collection_name = self.create_collection_name(project_id=project.project_id)
+        
+        # Step2: get text embedding vector
+        vector = self.embedding_client.embed_text(
+            text=text, document_type=DocumentTypeEnum.QUERY.value
+        )
+        
+        if not vector or len(vector)==None:
+            return False
+        
+        # Step3: do semantic search
+        results = self.vectordb_client.search_by_vector(
+            collection_name=collection_name,
+            vector=vector,
+            limit=limit,
+        )
+        if not results:
+            return False
+        
+        return json.loads(                                               # loads it as json
+            json.dumps(results, default=lambda x: x.__dict__)    # return every object with str format
+        )
