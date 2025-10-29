@@ -6,12 +6,13 @@ import json
 
 class NLPController(BaseController):
 
-    def __init__(self, generation_client, embedding_client, vectordb_client):
+    def __init__(self, generation_client, embedding_client, vectordb_client, template_parser):
         super().__init__()
 
         self.generation_client = generation_client
         self.embedding_client = embedding_client
         self.vectordb_client = vectordb_client
+        self.template_parser = template_parser
 
     def create_collection_name(self, project_id: str):
         return f"collection_{project_id}".strip()
@@ -100,4 +101,32 @@ class NLPController(BaseController):
             return None
         
         # Step2: construct LLM prompt:
+        system_prompt=self.template_parser.get(group="rag", key="system_prompt", vars={})
         
+        documents_prompts="\n".join([
+                self.template_parser.get(
+                    group="rag",
+                    key="document_prompt",
+                    vars={
+                        "doc_num" : idx+1,
+                        "chunk_text": doc.text
+                    })
+            for idx, doc in enumerate(retrieved_documents)
+        ])
+        
+        footer_prompt=self.template_parser.get(group="rag", key="footer_prompt", vars={})
+        
+        chat_history= [
+            self.generation_client.construct_prompt(
+                prompt=system_prompt,
+                role=self.generation_client.enums.SYSTEM.value
+            )
+        ]
+        
+        full_prompt = "\n\n".join([documents_prompts, footer_prompt])
+        
+        answer = self.generation_client.generate_text(
+            prompt=full_prompt,
+            chat_history=chat_history
+        )
+        return answer, full_prompt, chat_history
