@@ -174,3 +174,9 @@ pyvenv.cfg
 
 # ignore test notebooks
 notebooks/ 
+
+# ignore text files
+.txt
+
+# but keep requirements.txt
+!requirements.txt
