@@ -176,7 +176,7 @@ pyvenv.cfg
 notebooks/ 
 
 # ignore text files
-.txt
+*.txt
 
 # but keep requirements.txt
 !requirements.txt
