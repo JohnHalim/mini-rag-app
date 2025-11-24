@@ -27,6 +27,13 @@ export PS1="\[\033[01;32m\]\u@\h:\w\n\[\033[00m\]\$ "
 
 ## Installation
 
+### Before installing requirements, run this command (if using ubuntu)
+
+```bash
+sudo apt update
+sudo apt install libpq-dev gcc python3-dev
+```
+
 ### Install the required packages
 
 ```bash
