@@ -31,6 +31,6 @@ class DataChunk(SQLAlchemyBase):
     )
     
     
-class RetrievedDocuments(BaseModel):
+class RetrievedDocument(BaseModel):
     text: str
     score: float
