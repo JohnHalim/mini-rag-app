@@ -74,7 +74,7 @@ class NLPController(BaseController):
             text=text, document_type=DocumentTypeEnum.QUERY.value
         )
         
-        if not vector or len(vector)==None:
+        if not vector or len(vector)==0:
             return False
         
         # Step3: do semantic search
