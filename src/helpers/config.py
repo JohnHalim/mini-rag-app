@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import List
 
 class Settings(BaseSettings):
 
@@ -30,6 +31,7 @@ class Settings(BaseSettings):
     OPENAI_API_URL :str = None
     COHERE_API_KEY :str = None
 
+    GENERATION_MODEL_ID_LITERAL :List[str] = None
     GENERATION_MODEL_ID :str = None
     EMBEDDING_MODEL_ID :str = None
     EMBEDDING_MODEL_SIZE : int = None
@@ -40,6 +42,7 @@ class Settings(BaseSettings):
     
     ########################## Vector DB Config ###########################
     
+    VECTOR_DB_BACKEND_LITERAL :List[str] = None
     VECTOR_DB_BACKEND: str
     VECTOR_DB_PATH: str
     VECTOR_DB_DISTANCE_METHOD: str = None
