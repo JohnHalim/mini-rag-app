@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 import os
 import aiofiles
 from helpers.config import get_settings, Settings
-from controllers import DataController, ProjectController, ProcessController
+from controllers import DataController, ProjectController, ProcessController, NLPController
 from models import ResponseSignal
 import logging
 from .schemes.data import ProcessRequest
@@ -84,7 +84,7 @@ async def upload_data  (request: Request, project_id: int, file: UploadFile, app
     )
 
 
-######################################################################################################################
+################################################################################################################################
 
 
 @data_router.post("/process/{project_id}")
@@ -100,6 +100,13 @@ async def process_endpoint(request: Request, project_id: int, process_request: P
     )
 
     project = await project_model.get_project_or_create_one(project_id = project_id)
+    
+    nlp_controller = await NLPController(
+        generation_client=request.app.generation_client,
+        vectordb_client=request.app.vectordb_client,
+        embedding_client=request.app.embedding_client,
+        template_parser=request.app.template_parser
+    )
 
     asset_model = await AssetModel.create_instance(
         db_client= request.app.db_client
@@ -156,6 +163,11 @@ async def process_endpoint(request: Request, project_id: int, process_request: P
                     )
 
     if do_reset == 1:
+        # Delete accosiated vector collections:
+        collection_name =  nlp_controller.create_collection_name(project_id = project.project_id)
+        _ = await request.app.vectordb_client.delete_collection(collection_name = collection_name)
+        
+        # Delete accosiated chunks
         _ = await chunk_model.delete_chunks_by_project_id(
             project_id=project.project_id
         )
