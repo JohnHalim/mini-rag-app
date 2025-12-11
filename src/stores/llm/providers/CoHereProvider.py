@@ -2,6 +2,7 @@ from ..LLMInterface import LLMInterface
 from ..LLMEnums import CoHereEnums, DocumentTypeEnum
 import cohere
 import logging
+from typing import List, Union
 
 class CoHereProvider(LLMInterface):
     
@@ -64,11 +65,14 @@ class CoHereProvider(LLMInterface):
         return response.text
 
 
-    def embed_text(self, text, document_type = None):
+    def embed_text(self, text: Union[str, List[str]], document_type:str = None):
 
         if not self.client:
             self.logger.error("OpenAI client was not found")
             return None
+        
+        if isinstance(text, str):
+            text = [text]
         
         if not self.embedding_model_id:
             self.logger.error("embedding model for CoHere was not set")
@@ -80,7 +84,7 @@ class CoHereProvider(LLMInterface):
             
         response = self.client.embed(
             model=self.embedding_model_id,
-            texts=[self.process_text(text)],
+            texts=[self.process_text(t) for t in text],
             input_type=input_type,
             embedding_types=['float']
         )
@@ -88,7 +92,9 @@ class CoHereProvider(LLMInterface):
         if not response or not response.embeddings or not response.embeddings.float: #  or len(response.embeddings.float) == 0
             self.logger.error("error while embedding text with CoHere")
             return None
-        return response.embeddings.float[0]
+        
+        return [f for f in response.embeddings.float]
+        # return response.embeddings.float[0]
 
 
 
