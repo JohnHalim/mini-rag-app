@@ -11,6 +11,7 @@ REQUEST_LATENCY = Histogram(
 
 class PrometheusMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        
         start_time = time.time()
         
         # Process the request:
@@ -20,4 +21,19 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         duration = time.time() - start_time
         endpoint = request.url.path
         
+        REQUEST_LATENCY.lables(method=request.method, endpoint=endpoint).observe(duration)
+        REAUEST_COUNT.lables(method=request.method, endpoint=endpoint, status=response.status_code).inc()
         
+        return response
+    
+
+def setup_metrics(app: FastAPI):
+    """
+    Setup Prometheus metrics middleware and endpoint
+    """
+    # Add prometheus Middleware
+    app.add_middleware(PrometheusMiddleware)
+    
+    @app.get("/Hfaih_B242g_sdFlv", include_in_schema=False)
+    def metrics():
+        return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)    
