@@ -1,34 +1,58 @@
 services:
-    mongodb:
-        image: mongo:7-jammy
-        container_name: mongodb
-        ports: 
-            - "27007:27017"
-        volumes:
-            - mongodata:/data/db
-        environment:
-            - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-        networks:
-            - backend
-        restart: always
+  # FastAPI Application
 
-    pgvector:
-        image: pgvector/pgvector:0.8.1-pg18
-        container_name: pgvector
-        ports:
-            - "5432:5432"
-        volumes:
-            - pgvector_data:/var/lib/postgresql/data
-        environment:
-            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        networks:
-            - backend
-        restart: always
+  # Nginx Service
 
-networks:
-    backend:
+  # PostgreSQL (pgvector)
+  pgvector:
+    image: pgvector/pgvector:0.8.1-pg18
+    container_name: pgvector
+    ports:
+      - "5432:54342"
+    volumes:
+      - "pgvector:/var/lib/postgresql/data"
+    env_file:
+      - ./env/.env.postgres
+    networks:
+      - backend
+    restart: always
+    healthcheck:
+      test: ["CMD_SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
-volumes:
-    mongodata:
-    pgvector_data:
+  # Qdrant (vectordb)
+  qdrant:
+    image: qdrant/qdrant:v1.14.1
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - backend
+    restart: always
+
+  # Prometheus Monitoring
+
+  # Grafana Dashboard
+
+  # Node exporter for system metrics
+
+  # PostgreSQL exporter for postgres metrics
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.18.1
+    container_name: postgres-exporter
+    ports:
+      - "9187:9187"
+    env_file:
+      - ./env/.env.postgres-exporter
+    depends_on:
+      - pgvector
+    networks:
+      - backend
+    restart: always
+
