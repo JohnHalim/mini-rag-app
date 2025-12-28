@@ -23,6 +23,7 @@ services:
       retries: 5
       start_period: 10s
 
+
   # Qdrant (vectordb)
   qdrant:
     image: qdrant/qdrant:v1.14.1
@@ -35,6 +36,7 @@ services:
     networks:
       - backend
     restart: always
+
 
   # Prometheus Monitoring
   prometheus:
@@ -55,6 +57,7 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
 
+
   # Grafana Dashboard
   grafana:
     image: grafana/grafana:12.3-ubuntu
@@ -65,8 +68,32 @@ services:
       - grafana_data:/var/lib/grafana
     env_file:
       - ./env/.env.grafana
+    depends_on: 
+     - prometheus
+    networks:
+      - backend
+    restart: always
+
 
   # Node exporter for system metrics
+  node-exporter:
+    image: prom/node-exporter:v1.10.2
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - backend
+    restart: always
+
 
   # PostgreSQL exporter for postgres metrics
   postgres-exporter:
