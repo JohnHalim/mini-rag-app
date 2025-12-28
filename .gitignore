@@ -123,11 +123,13 @@ celerybeat.pid
 .env
 .venv
 # env/
-venv/
-ENV/
+# venv/
+# ENV/
 env.bak/
 venv.bak/
 **/mini-rag/
+!docker/env/.env.example.*
+!.env.example.*
 
 
 # Spyder project settings
