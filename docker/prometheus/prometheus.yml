@@ -21,6 +21,11 @@ scrape_configs:
     static_configs:
       - targets: ['node-exporter:9100']
 
+  - job_name: 'fastapi'
+    static_configs:
+      - targets: ['fastapi:8000']
+    metrics_path: '/Hfaih_B242g_sdFlv'
+
 
 
 
