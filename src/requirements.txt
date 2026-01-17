@@ -7,7 +7,7 @@ aiofiles==23.2.1
 langchain==0.1.20
 PyMuPDF==1.24.3
 motor==3.6.1
-openai==1.66.3
+openai==1.108.0
 httpx==0.27.2
 cohere==5.5.8
 qdrant-client==1.10.1
@@ -17,3 +17,10 @@ alembic==1.17.2
 psycopg2==2.9.11
 pgvector==0.4.1
 nltk==3.9.2
+
+# Monitoring and Metrics
+prometheus-client==0.22.0
+starlette_exporter==0.23.0
+
+# Health Checks
+fastapi-health==0.4.0
