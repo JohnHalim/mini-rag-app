@@ -21,8 +21,8 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         duration = time.time() - start_time
         endpoint = request.url.path
         
-        REQUEST_LATENCY.lables(method=request.method, endpoint=endpoint).observe(duration)
-        REAUEST_COUNT.lables(method=request.method, endpoint=endpoint, status=response.status_code).inc()
+        REQUEST_LATENCY.labels(method=request.method, endpoint=endpoint).observe(duration)
+        REAUEST_COUNT.labels(method=request.method, endpoint=endpoint, status=response.status_code).inc()
         
         return response
     
