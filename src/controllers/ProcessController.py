@@ -82,7 +82,7 @@ class ProcessController(BaseController):
         current_chunk = ""
         
         for line in lines:
-            current_chunk = line + splitter_tag
+            current_chunk += line + splitter_tag
             if len(current_chunk) >= chunk_size:
                 chunks.append(Document(
                     page_content=current_chunk.strip(),

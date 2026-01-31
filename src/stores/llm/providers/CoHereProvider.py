@@ -51,10 +51,17 @@ class CoHereProvider(LLMInterface):
         max_output_tokens = max_output_tokens if max_output_tokens else self.default_generation_max_output_tokens
         temperature = temperature if temperature else self.default_input_temperature
         
+        chat_history.append(
+            self.construct_prompt(
+                prompt=prompt,
+                role=CoHereEnums.USER.value
+            )
+        )
+        
         response = self.client.chat(
             model=self.generation_model_id,
-            chat_history=chat_history,
-            message=self.process_text(prompt),
+            chat_history=chat_history[:-1],  # All except the last message
+            message=chat_history[-1]["text"],  # The user message
             temperature=temperature,
             max_tokens=max_output_tokens
         )
